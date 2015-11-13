@@ -8,17 +8,27 @@ import jpcap.packet.Packet;
 public class Receiver implements PacketReceiver {
 
 	private BlockingDeque<Packet> netData;
-
-	public Receiver(BlockingDeque<Packet> netData) {
-		this.netData = netData;
+	private BlockingDeque<Packet> request;
+	private BlockingDeque<Packet> response;
+	public Receiver(BlockingDeque<Packet> request,
+			BlockingDeque<Packet> response) {
+		this.request = request;
+		this.response = response;
 	}
 
 	@Override
 	public void receivePacket(Packet packet) {
 
 		try {
-			netData.put(packet);
-		} catch (InterruptedException e) {
+			if(packet.data.length > 0){
+				if(Utils.isResponse(new String(packet.data,"utf-8")))
+					response.add(packet);
+				else
+					if(Utils.isRequest(new String(packet.data,"utf-8")))
+						request.add(packet);
+			}
+				
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
