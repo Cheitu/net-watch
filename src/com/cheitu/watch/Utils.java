@@ -21,7 +21,7 @@ public class Utils {
 			}
 			stringBuilder.append(hv);
 			if (i < src.length - 1) {
-				stringBuilder.append(":");
+				stringBuilder.append("-");
 			}
 		}
 		return stringBuilder.toString().toUpperCase();

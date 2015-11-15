@@ -4,6 +4,7 @@ import java.util.concurrent.BlockingDeque;
 
 import jpcap.PacketReceiver;
 import jpcap.packet.Packet;
+import jpcap.packet.TCPPacket;
 
 public class Receiver implements PacketReceiver {
 
@@ -20,7 +21,8 @@ public class Receiver implements PacketReceiver {
 	public void receivePacket(Packet packet) {
 
 		try {
-			if(packet.data.length > 0){
+			if(packet instanceof TCPPacket && packet.data.length > 0){
+				System.out.println(new String(packet.data,"utf-8"));
 				if(Utils.isResponse(new String(packet.data,"utf-8")))
 					response.add(packet);
 				else
