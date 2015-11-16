@@ -52,8 +52,8 @@ public class Customer implements Runnable{
 				System.out.println(res.dst_ip.toString() + " src " + req.src_ip.toString());
 				if(res.dst_ip.equals(req.src_ip)){
 					stmt = connection.prepareStatement(INSERT_SQL);
-					stmt.setString(1, req.src_ip.toString());
-					stmt.setString(2, req.dst_ip.toString());
+					stmt.setString(1, req.src_ip.toString().replace("/", ""));
+					stmt.setString(2, req.dst_ip.toString().replace("/", ""));
 					stmt.setString(3, String.valueOf(reqMap.get("head")));
 					stmt.setString(4, String.valueOf(reqMap.get("content")));
 					stmt.setString(5, String.valueOf(resMap.get("head")));

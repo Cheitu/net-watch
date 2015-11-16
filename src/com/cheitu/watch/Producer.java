@@ -34,7 +34,6 @@ public class Producer implements Runnable{
 		JpcapCaptor jpcap;
 		try {
 			jpcap = JpcapCaptor.openDevice(hardWare, 65535, false,20);
-			 //jpcap.setFilter("tcp and port 8080 and (ether dst 74:D4:35:9A:7B:ED)", true);
 			 jpcap.setFilter("tcp and port 8080", true);
 			jpcap.loopPacket(-1, new Receiver(request, response));
 		} catch (IOException e) {
