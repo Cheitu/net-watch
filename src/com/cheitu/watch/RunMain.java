@@ -13,12 +13,15 @@ public class RunMain {
 
 	public static void main(String args[]){
 	 
-		BlockingDeque<Packet> netData = new LinkedBlockingDeque<Packet>();
 		BlockingDeque<Packet> req = new LinkedBlockingDeque<Packet>();
 		BlockingDeque<Packet> res = new LinkedBlockingDeque<Packet>();
-		Customer customer = new Customer(req,res);
-		new Thread(customer).start();
+	 
+		ReqCustomer reqCustomer = new ReqCustomer(req);
+		new Thread(reqCustomer).start();
+		ResCustomer resCustomer = new ResCustomer(res);
+		new Thread(resCustomer).start();
 		String ethName = args.length>0?args[0]:"eth0";
+	 
 		System.out.println("Listening on interface-----" + ethName);
 		final NetworkInterface[] devices = JpcapCaptor.getDeviceList();
 		for(int i=0;i<devices.length;i++){

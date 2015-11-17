@@ -8,7 +8,6 @@ import jpcap.packet.TCPPacket;
 
 public class Receiver implements PacketReceiver {
 
-	private BlockingDeque<Packet> netData;
 	private BlockingDeque<Packet> request;
 	private BlockingDeque<Packet> response;
 	public Receiver(BlockingDeque<Packet> request,
@@ -21,7 +20,7 @@ public class Receiver implements PacketReceiver {
 	public void receivePacket(Packet packet) {
 
 		try {
-			if(packet instanceof TCPPacket && packet.data.length > 0){
+			if(packet !=null && packet.data.length > 0){
 				System.out.println(new String(packet.data,"utf-8"));
 				if(Utils.isResponse(new String(packet.data,"utf-8")))
 					response.add(packet);

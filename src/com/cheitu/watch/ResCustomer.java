@@ -10,22 +10,16 @@ import java.util.concurrent.BlockingDeque;
 import jpcap.packet.Packet;
 import jpcap.packet.TCPPacket;
 
-public class Customer implements Runnable{
+public class ResCustomer implements Runnable{
 	
-	private static final String INSERT_SQL = "INSERT INTO t_data(request_ip,response_ip,request_head,request_content,"
-			+ "response_head,response_content) VALUES(?,?,?,?,?,?)";
+	private static final String INSERT_SQL = "INSERT INTO t_response(request_ip,"
+			+ "response_content,response_head,response_port,request_port) VALUES(?,?,?,?,?)";
 	
-	private BlockingDeque<Packet> netData;
-	private BlockingDeque<Packet> request;
 	private BlockingDeque<Packet> response;
 	private Connection connection = null;
 	
-	public Customer(BlockingDeque<Packet> netData){
-		this.netData = netData;
-	}
-	public Customer(BlockingDeque<Packet> request,
-			BlockingDeque<Packet> response){
-		this.request = request;
+	 
+	public ResCustomer(BlockingDeque<Packet> response){
 		this.response = response;
 		
 		try {
@@ -37,33 +31,22 @@ public class Customer implements Runnable{
 
 	@Override
 	public void run() {
-		TCPPacket req = null;
 		TCPPacket res = null;
 		PreparedStatement stmt=null;
-		Map<String, Object> reqMap = null;
 		Map<String, Object> resMap = null;
 		while(true){
 			try {
-				req  = (TCPPacket)request.take();
-				res = (TCPPacket)response.take();
-				System.out.println(1);
-				reqMap = getHeadAndContent(new String(req.data,"utf-8"));
+				res  = (TCPPacket)response.take();
 				resMap = getHeadAndContent(new String(res.data,"utf-8"));
-				System.out.println(res.dst_ip.toString() + " src " + req.src_ip.toString());
-				if(res.dst_ip.equals(req.src_ip)){
 					stmt = connection.prepareStatement(INSERT_SQL);
-					stmt.setString(1, req.src_ip.toString().replace("/", ""));
-					stmt.setString(2, req.dst_ip.toString().replace("/", ""));
-					stmt.setString(3, String.valueOf(reqMap.get("head")));
-					stmt.setString(4, String.valueOf(reqMap.get("content")));
-					stmt.setString(5, String.valueOf(resMap.get("head")));
-					stmt.setString(6, String.valueOf(resMap.get("content")));
+					stmt.setString(1, res.dst_ip.toString().replace("/", ""));
+					stmt.setString(3, String.valueOf(resMap.get("head")));
+					stmt.setString(2, String.valueOf(resMap.get("content")));
+					stmt.setString(4, String.valueOf(res.src_port));
+					stmt.setString(5, String.valueOf(res.dst_port));
 					stmt.executeUpdate();
 					stmt.close();
 					stmt = null;
-				}else
-					continue;
-				
 				
 			} catch (Exception e) {
 				e.printStackTrace();

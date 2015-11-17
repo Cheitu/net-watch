@@ -9,18 +9,12 @@ import jpcap.packet.Packet;
 
 public class Producer implements Runnable{
 
-	private BlockingDeque<Packet> netData;
 	private BlockingDeque<Packet> request;
 	private BlockingDeque<Packet> response;
 	
 	private NetworkInterface hardWare;
 	
-	public Producer(NetworkInterface hardWare, BlockingDeque<Packet> netData){
-		this.netData = netData;
-		
-		this.hardWare = hardWare;
-		
-	}
+ 
 	
 	public Producer(NetworkInterface hardWare, BlockingDeque<Packet> request,
 			BlockingDeque<Packet> response){
@@ -34,7 +28,7 @@ public class Producer implements Runnable{
 		JpcapCaptor jpcap;
 		try {
 			jpcap = JpcapCaptor.openDevice(hardWare, 65535, false,20);
-			 jpcap.setFilter("tcp and port 8080", true);
+			 jpcap.setFilter("ip and tcp", true);
 			jpcap.loopPacket(-1, new Receiver(request, response));
 		} catch (IOException e) {
 			e.printStackTrace();
