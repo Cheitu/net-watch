@@ -17,7 +17,10 @@ public class RunMain {
 		BlockingDeque<Packet> req = new LinkedBlockingDeque<Packet>();
 		BlockingDeque<Packet> res = new LinkedBlockingDeque<Packet>();
 		Customer customer = new Customer(req,res);
-		new Thread(customer).start();
+		ReqCustomer reqCustomer = new ReqCustomer(req);
+		ResCustomer resCustomer = new ResCustomer(res);
+		new Thread(reqCustomer).start();
+		new Thread(resCustomer).start();
 		String ethName = args.length>0?args[0]:"eth0";
 		System.out.println("Listening on interface-----" + ethName);
 		final NetworkInterface[] devices = JpcapCaptor.getDeviceList();
