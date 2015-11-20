@@ -1,5 +1,8 @@
 package com.cheitu.watch;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Utils {
 
 	/**
@@ -58,6 +61,20 @@ public class Utils {
 		}
 
 		return result;
+	}
+	
+	public static String format(Date date, String pattern) {
+		String returnValue = "";
+		if (date != null) {
+			SimpleDateFormat df = new SimpleDateFormat(pattern);
+			returnValue = df.format(date);
+		}
+		return (returnValue);
+	}
+	
+	public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
+	public static String getNow() {
+		return format(new Date(), FORMAT_FULL);
 	}
 
 }

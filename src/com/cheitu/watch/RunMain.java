@@ -13,8 +13,8 @@ public class RunMain {
 
 	public static void main(String args[]){
 	 
-		BlockingDeque<Packet> req = new LinkedBlockingDeque<Packet>();
-		BlockingDeque<Packet> res = new LinkedBlockingDeque<Packet>();
+		BlockingDeque<Object> req = new LinkedBlockingDeque<Object>();
+		BlockingDeque<Object> res = new LinkedBlockingDeque<Object>();
 	 
 		ReqCustomer reqCustomer = new ReqCustomer(req);
 		new Thread(reqCustomer).start();

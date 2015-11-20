@@ -9,15 +9,15 @@ import jpcap.packet.Packet;
 
 public class Producer implements Runnable{
 
-	private BlockingDeque<Packet> request;
-	private BlockingDeque<Packet> response;
+	private BlockingDeque<Object> request;
+	private BlockingDeque<Object> response;
 	
 	private NetworkInterface hardWare;
 	
  
 	
-	public Producer(NetworkInterface hardWare, BlockingDeque<Packet> request,
-			BlockingDeque<Packet> response){
+	public Producer(NetworkInterface hardWare, BlockingDeque<Object> request,
+			BlockingDeque<Object> response){
 		this.hardWare = hardWare;
 		this.request = request;
 		this.response = response;
@@ -28,7 +28,7 @@ public class Producer implements Runnable{
 		JpcapCaptor jpcap;
 		try {
 			jpcap = JpcapCaptor.openDevice(hardWare, 65535, false,20);
-			 jpcap.setFilter("ip and tcp", true);
+			 jpcap.setFilter("ip and tcp and (port 8080 or 8005 or 8009)", true);
 			jpcap.loopPacket(-1, new Receiver(request, response));
 		} catch (IOException e) {
 			e.printStackTrace();

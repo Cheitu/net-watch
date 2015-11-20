@@ -22,9 +22,9 @@ public final class JdbcUtils {
      * 获取连接
      */
     public static Connection getConnection() throws SQLException{
-    	String url="jdbc:mysql://**.**.**.227:3306/sniffer?useUnicode=true&amp;characterEncoding=utf-8";
-		String user="***";
-		String password="***";	
+    	String url="jdbc:mysql://****:3306/sniffer?useUnicode=true&amp;characterEncoding=utf-8";
+		String user="root";
+		String password="123456";	
     	 
 		return DriverManager.getConnection(url,user,password);
     }

@@ -7,19 +7,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 
-import jpcap.packet.Packet;
 import jpcap.packet.TCPPacket;
 
 public class ResCustomer implements Runnable{
 	
 	private static final String INSERT_SQL = "INSERT INTO t_response(request_ip,"
-			+ "response_content,response_head,response_port,request_port) VALUES(?,?,?,?,?)";
+			+ "response_content,response_head,response_time,response_log) VALUES(?,?,?,?,?)";
 	
-	private BlockingDeque<Packet> response;
+	private BlockingDeque<Object> response;
 	private Connection connection = null;
 	
 	 
-	public ResCustomer(BlockingDeque<Packet> response){
+	public ResCustomer(BlockingDeque<Object> response){
 		this.response = response;
 		
 		try {
@@ -29,29 +28,34 @@ public class ResCustomer implements Runnable{
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void run() {
+		Map<String, Object> params = null;
 		TCPPacket res = null;
-		PreparedStatement stmt=null;
+		PreparedStatement stmt = null;
 		Map<String, Object> resMap = null;
-		while(true){
+		while (true) {
 			try {
-				res  = (TCPPacket)response.take();
-				resMap = getHeadAndContent(new String(res.data,"utf-8"));
-					stmt = connection.prepareStatement(INSERT_SQL);
-					stmt.setString(1, res.dst_ip.toString().replace("/", ""));
-					stmt.setString(3, String.valueOf(resMap.get("head")));
-					stmt.setString(2, String.valueOf(resMap.get("content")));
-					stmt.setString(4, String.valueOf(res.src_port));
-					stmt.setString(5, String.valueOf(res.dst_port));
-					stmt.executeUpdate();
-					stmt.close();
-					stmt = null;
-				
+				params = (Map<String, Object>) response.take();
+				res = (TCPPacket) params.get("packet");
+				resMap = getHeadAndContent(new String(res.data, "utf-8"));
+				stmt = connection.prepareStatement(INSERT_SQL);
+				stmt.setString(1, res.src_ip.toString().replace("/", ""));
+				stmt.setString(2, String.valueOf(resMap.get("content")));
+				stmt.setString(3, String.valueOf(resMap.get("head")));
+				stmt.setString(4, String.valueOf(params.get("date")));
+				stmt.setString(5, "src IP: " + res.src_ip + " dst IP: "
+                        + res.dst_ip + " send port: " + res.src_port
+                        + " dst port: " + res.dst_port + " protocol:" + res.protocol);
+				stmt.executeUpdate();
+				stmt.close();
+				stmt = null;
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 	
