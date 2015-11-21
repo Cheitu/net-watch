@@ -5,7 +5,6 @@ import java.util.concurrent.BlockingDeque;
 
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
-import jpcap.packet.Packet;
 
 public class Producer implements Runnable{
 
