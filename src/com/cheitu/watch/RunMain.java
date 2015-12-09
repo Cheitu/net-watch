@@ -7,7 +7,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import jpcap.JpcapCaptor;
 import jpcap.NetworkInterface;
-import jpcap.packet.Packet;
 
 public class RunMain {
 
@@ -20,6 +19,8 @@ public class RunMain {
 		new Thread(reqCustomer).start();
 		ResCustomer resCustomer = new ResCustomer(res);
 		new Thread(resCustomer).start();
+		RequestCount requestCount = new RequestCount();
+		new Thread(requestCount).start();
 		String ethName = args.length>0?args[0]:"eth0";
 	 
 		System.out.println("Listening on interface-----" + ethName);
